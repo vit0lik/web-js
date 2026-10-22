@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Календарь и Таблица умножения</title>
+    <style>
+body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #262624;
+            color: #e6c89f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            color: #8c8273;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin: 30px 0 10px 0;
+        }
+
+        #month-name {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0 0 16px 0;
+            color: #f3dfc1;
+            letter-spacing: 0.02em;
+        }
+
+        table {
+            border-collapse: separate;
+            border-spacing: 6px;
+            margin-bottom: 24px;
+        }
+
+        th, td {
+            width: 44px;
+            height: 44px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 1rem;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        /* Заголовки дней недели и осей */
+        th {
+            color: #8c8273;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background: transparent;
+        }
+
+        /* Обычные числа */
+        td {
+            color: #f3dfc1;
+            background: transparent;
+        }
+
+        /* Текущий выбранный день: закруглённая обводка */
+        .today {
+            border: 1.5px solid #6b6355;
+            border-radius: 12px;
+            color: #fff;
+            background: transparent;
+            font-weight: 600;
+        }
+
+        /* Таблица умножения в тон общему стилю */
+        #mult-table td {
+            font-size: 0.9rem;
+            color: #d1b896;
+            border-radius: 6px;
+        }
+
+        #mult-table td:hover {
+            background-color: #33322e;
+            color: #fff;
+        }
+        .other-month {
+            color: #554e43;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>3.1. Календарь</h2>
+    <h3 id="month-name"></h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Пн</th>
+                <th>Вт</th>
+                <th>Ср</th>
+                <th>Чт</th>
+                <th>Пт</th>
+                <th>Сб</th>
+                <th>Вс</th>
+            </tr>
+        </thead>
+        <tbody id="calendar-body"></tbody>
+    </table>
+
+    <h2>3.2. Таблица умножения</h2>
+    <table id="mult-table"></table>
+
+    <script>
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const today = now.getDate();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const prevDaysInMonth = new Date(year, month, 0).getDate();
+        const calBody = document.getElementById("calendar-body");
+        const multTable = document.getElementById("mult-table");
+        let firstDay = new Date(year, month, 1).getDay();
+        firstDay = firstDay === 0 ? 7 : firstDay;
+        const months = [
+            "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+            "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+        ];
+
+        // Календарь
+
+        document.getElementById("month-name").innerText = months[month] + " " + year;
+
+
+        let row = document.createElement("tr");
+
+        for (let i = 1; i <= firstDay; i++) {
+            cell = document.createElement("td")
+            cell.innerText = prevDaysInMonth - firstDay + 1 + i;
+            cell.className = "other-month";
+            row.appendChild(cell)
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const cell = document.createElement("td");
+            cell.innerText = day;
+
+            if (day === today) {
+                cell.className = "today";
+            }
+
+            row.appendChild(cell);
+
+            if (row.children.length === 7) {
+                calBody.appendChild(row);
+                row = document.createElement("tr");
+            }
+        }
+
+        if (row.children.length >= 0) {
+            while (row.children.length < 7) {
+                cell = document.createElement("td");
+                cell.innerText = row.children.length + 1;
+                cell.className = "other-month";
+                row.appendChild(cell);
+            }
+            calBody.appendChild(row);
+        }
+
+        // Таблица умножения 
+
+        let headerRow = document.createElement("tr");
+        headerRow.appendChild(document.createElement("th"));
+        for (let i = 1; i <= 10; i++) {
+            const th = document.createElement("th");
+            th.innerText = i;
+            headerRow.appendChild(th);
+        }
+        multTable.appendChild(headerRow);
+
+        for (let i = 1; i <= 10; i++) {
+            let tr = document.createElement("tr");
+            const th = document.createElement("th");
+            th.innerText = i;
+            tr.appendChild(th);
+
+            for (let j = 1; j <= 10; j++) {
+                const td = document.createElement("td");
+                td.innerText = i * j;
+                tr.appendChild(td);
+            }
+            multTable.appendChild(tr);
+        }
+    </script>
+
+</body>
+</html>
